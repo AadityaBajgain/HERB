@@ -1,18 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-
-const links = [
-  { label: "Home", href: "/" },
-  { label: "Map", href: "/map" },
-];
 
 const Navbar = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur">
       <nav className="page-shell flex items-center justify-between py-4">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500 text-lg font-semibold text-white shadow-lg shadow-emerald-500/30">
-            H
+        <Link href="/" className="flex items-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl">
+            <Image
+              src="/HERBLogo.png"
+              alt="Herb logo"
+              width={36}
+              height={36}
+              priority
+            />
           </div>
           <div className="leading-tight">
             <p className="text-base font-semibold text-white">HERB</p>

@@ -48,7 +48,7 @@ const supportSteps = [
 
 const Page = () => {
   return (
-    <main className="py-16">
+    <main className="pb-20">
       <div className="page-shell space-y-24">
         <HeroSection />
 
@@ -160,15 +160,12 @@ const Page = () => {
               Ready to feel supported every day?
             </h2>
             <p className="text-lg text-muted">
-              We’ll match you with the right routines, care team, and nearby resources so you can focus on feeling your best.
+              We’ll match you with the right routines, care, and nearby resources so you can focus on feeling your best.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link href="/map" className="btn-primary">
               Find care near me
-            </Link>
-            <Link href="mailto:hello@herb.health" className="btn-secondary">
-              Talk to our team
             </Link>
           </div>
         </section>

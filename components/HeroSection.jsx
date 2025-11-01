@@ -3,28 +3,10 @@ import React from "react";
 
 
 
-const highlights = [
-  {
-    label: "AI triage",
-    detail: "Track symptoms in real-time with smart monitoring.",
-  },
-  {
-    label: "Guided plans",
-    detail: "Receive actionable care measures.",
-  },
-  {
-    label: "Severity Score",
-    detail: "Gives the ranking based on the symptoms and description"
-  },
-  {
-    label: "Maps",
-    detail:"Renders the map with the specialized hospitals based on the patients need"
-  }
-];
 
 const HeroSection = () => {
   return (
-    <section className="grid items-center gap-16 lg:grid-cols-[1.1fr_0.9fr]">
+    <section className="h-screen grid items-center gap-16 lg:grid-cols-[1.1fr_0.9fr]">
       <div className="space-y-10">
         <span className="inline-flex items-center rounded-full border border-emerald-500/40 bg-emerald-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-300">
           Wellness reinvented
@@ -32,7 +14,7 @@ const HeroSection = () => {
         <div className="space-y-6">
           <h1 className="text-4xl font-semibold leading-tight text-white md:text-5xl">
             Navigate your health with{" "}
-            <span className="text-emerald-400">Herb</span>
+            <span className="text-emerald-400">HERB</span>
           </h1>
           <p className="max-w-xl text-lg text-muted">
             Herb monitors how you feel, surfaces proactive care insights, and
@@ -42,8 +24,8 @@ const HeroSection = () => {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <Link href="/map" className="btn-primary w-full sm:w-auto">
-            Explore nearby care
+          <Link href="/diagnosis" className="btn-primary w-full sm:w-auto">
+            Start Diagnosis
           </Link>
           <Link href="#features" className="btn-secondary w-full sm:w-auto">
             See how it works
@@ -60,32 +42,19 @@ const HeroSection = () => {
         <div className="relative space-y-6">
           <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-              Patient's Checkin2
+              Patient&apos;s check-in
             </p>
             <p className="mt-4 text-sm text-muted">
               “I woke up feeling dizzy.” Herb recommends hydration, stretches,
               and an on-demand nurse consult if symptoms persist.
             </p>
-            <div className="mt-6 flex items-center justify-between rounded-xl bg-emerald-500/10 px-4 py-3 text-xs font-medium text-emerald-200">
-              <span>Get Yourself Diagnosed</span>
+            <div className="mt-6 flex items-center justify-between rounded-xl bg-emerald-500/10 px-4 py-3 text-xs font-medium text-emerald-200 hover:bg-emerald-500 cursor-pointer">
+              <button>Get Yourself Diagnosed</button>
               <span></span>
             </div>
           </div>
 
-          <ul className="space-y-4">
-            {highlights.map(({ label, detail }) => (
-              <li
-                key={label}
-                className="flex items-start gap-3 rounded-2xl border border-white/5 bg-white/5 p-4"
-              >
-                <span className="mt-1 h-2 w-2 rounded-full bg-emerald-400" />
-                <div>
-                  <p className="text-sm font-semibold text-white">{label}</p>
-                  <p className="text-sm text-muted">{detail}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          
         </div>
       </div>
     </section>
