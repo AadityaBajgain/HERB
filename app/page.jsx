@@ -7,7 +7,7 @@ const features = [
     title: "Actionable insights",
     badge: "Digestible reports",
     description:
-      "pop: Herb translates your vitals, sleep, and mood trends into simple nudges you can act on today.",
+      "Herb translates your vitals, sleep, and mood trends into simple nudges you can act on today.",
   },
   {
     title: "Smart triage",

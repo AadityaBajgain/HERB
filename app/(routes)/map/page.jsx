@@ -14,7 +14,7 @@ const safetyTips = [
       "Have recent notes, medications, and allergies on hand so the care team can act quickly.",
   },
   {
-    title: "Lean on Herb",
+    title: "Lean on H.E.R.B.",
     detail:
       "Ping our clinicians through the app for a quick triage while you’re en route or waiting to be seen.",
   },
