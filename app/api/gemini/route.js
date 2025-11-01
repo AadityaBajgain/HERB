@@ -1,31 +1,37 @@
+import { GoogleGenAI, Type } from "@google/genai";
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const ai = new GoogleGenAI({
+    apiKey:process.env.GOOGLE_GEMINI_API_KEY,
+});
 
 export async function GET() {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-
-    const response = await model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [
-            { text: "Generate a short JSON object describing a car." }
-          ],
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents:
+      "List a few popular cookie recipes, and include the amounts of ingredients.",
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            recipeName: {
+              type: Type.STRING,
+            },
+            ingredients: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.STRING,
+              },
+            },
+          },
+          propertyOrdering: ["recipeName", "ingredients"],
         },
-      ],
-      generationConfig: {
-        responseMimeType: "application/json",
       },
-    });
+    },
+  });
 
-    // Extract the text response
-    const result = response.response.text();
-    return NextResponse.json(JSON.parse(result));
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+return NextResponse.json(JSON.parse(response.text));
 }
