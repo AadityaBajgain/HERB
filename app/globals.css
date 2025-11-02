@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020617;
-  --background-elevated: rgba(15, 23, 42, 0.75);
-  --foreground: #f8fafc;
-  --muted: #94a3b8;
-  --accent: #22c55e;
-  --accent-strong: #16a34a;
+  --background: #1a714c;
+  --background-elevated: #4da836;
+  --foreground: #7a3b03;
+  --muted: #e5f3e2;
+  --accent: #588157;
+  --accent-strong: #ddc615;
 }
 
 @theme inline {
@@ -26,9 +26,8 @@
     min-height: 100vh;
     background-color: var(--background);
     background-image:
-      radial-gradient(circle at top left, rgba(34, 197, 94, 0.2), transparent 45%),
-      radial-gradient(circle at top right, rgba(14, 165, 233, 0.18), transparent 40%),
-      radial-gradient(circle at bottom, rgba(168, 85, 247, 0.12), transparent 55%);
+      linear-gradient(to bottom,#0ea75da3,  transparent 15%);
+      background-attachment:scroll;
     color: var(--foreground);
     font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     line-height: 1.6;
@@ -41,22 +40,22 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.3), transparent 55%);
-    filter: blur(90px);
+    background: linear-gradient(135deg, #7b190046, transparent 55%);
+    filter: blur(100px);
     z-index: -1;
   }
 
   main {
     width: 100%;
   }
-
+  
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    color: var(--foreground);
+    color: var(--background);
     font-family: var(--font-geist-sans), system-ui, sans-serif;
   }
 
@@ -75,13 +74,13 @@
   .glass-card {
     background: var(--background-elevated);
     @apply border border-white/10 backdrop-blur-2xl;
-    box-shadow: 0 28px 80px -48px rgba(15, 23, 42, 0.95);
+    box-shadow: 0 28px 80px -48px #4c1b00c1;
   }
 
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition duration-200 focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
-    background: linear-gradient(135deg, var(--accent), #0ea5e9);
-    box-shadow: 0 18px 45px -24px rgba(14, 165, 233, 0.7);
+    background: linear-gradient(90deg, #49bb2d, #04973c);
+    box-shadow: 0 18px 45px -24px #832300d5;
   }
 
   .btn-primary:hover {
@@ -94,14 +93,16 @@
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 py-3 text-sm font-semibold text-slate-100 transition duration-200 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
+    background-color: #3A5A40;
   }
 
   .btn-secondary:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.473);
+    color: #3A5A40;
   }
 
   .btn-secondary:active {
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: #3A5A40;
   }
 }
 
