@@ -20,7 +20,50 @@ const safetyTips = [
   },
 ];
 
-const MapPage = () => {
+const DEFAULT_MAP_CONFIG = {
+  keyword: "",
+  placeType: "hospital",
+  title: "Hospitals & clinics near you",
+  highlight: "Tap a marker or list item to see contact details.",
+};
+
+const toSingleValue = (value, fallback = "") => {
+  if (Array.isArray(value)) return value[0] ?? fallback;
+  return value ?? fallback;
+};
+
+const MapPage = ({ searchParams = {} }) => {
+  const specialtyKeyword = toSingleValue(searchParams.keyword, "");
+  const specialtyPlaceType = toSingleValue(
+    searchParams.placeType,
+    DEFAULT_MAP_CONFIG.placeType
+  );
+  const specialtyTitle = toSingleValue(
+    searchParams.title,
+    DEFAULT_MAP_CONFIG.title
+  );
+  const specialtyHighlight = toSingleValue(
+    searchParams.highlight,
+    DEFAULT_MAP_CONFIG.highlight
+  );
+
+  const mapConfig = {
+    keyword: specialtyKeyword || DEFAULT_MAP_CONFIG.keyword,
+    placeType: specialtyPlaceType || DEFAULT_MAP_CONFIG.placeType,
+    title: specialtyTitle || DEFAULT_MAP_CONFIG.title,
+    highlight: specialtyHighlight || DEFAULT_MAP_CONFIG.highlight,
+  };
+
+  const isSpecialtySearch =
+    Boolean(searchParams.keyword) ||
+    Boolean(searchParams.placeType) ||
+    Boolean(searchParams.title) ||
+    Boolean(searchParams.highlight);
+
+  const pageDescription = isSpecialtySearch
+    ? `We’re highlighting nearby care tailored to your recent results: ${mapConfig.title}.`
+    : "We use your location to surface nearby emergency rooms, urgent care, and trusted partners so you can get help fast.";
+
   return (
     <main className="py-16">
       <div className="page-shell space-y-16">
@@ -32,14 +75,16 @@ const MapPage = () => {
             Hospitals and clinics near you
           </h1>
           <p className="text-lg text-muted">
-            We use your location to surface nearby emergency rooms, urgent care, and trusted partners so you can get help fast.
+            {pageDescription}
           </p>
         </div>
 
         <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
           <MapComp
-            title="Hospitals & clinics near you"
-            highlight="Tap a marker or list item to see contact details."
+            keyword={mapConfig.keyword}
+            placeType={mapConfig.placeType}
+            title={mapConfig.title}
+            highlight={mapConfig.highlight}
           />
 
           <aside className="glass-card flex h-full flex-col rounded-3xl p-8">
@@ -50,6 +95,14 @@ const MapPage = () => {
               <p className="text-sm text-muted">
                 Herb stays with you the entire way. Use these tips to make sure you’re prepared and confident when you arrive.
               </p>
+              {isSpecialtySearch && (
+                <div className="rounded-3xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-emerald-100">
+                  Showing nearby options focused on:{" "}
+                  <span className="font-semibold text-white">
+                    {mapConfig.title}
+                  </span>
+                </div>
+              )}
             </div>
 
             <ul className="mt-8 space-y-5">

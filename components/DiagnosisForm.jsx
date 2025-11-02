@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { deriveSpecialtySearch } from "@/lib/specialityHospitals";
 
 const formatSize = (size) => {
   if (size < 1024) return `${size} B`;
@@ -30,8 +32,7 @@ const DiagnosisForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
-  const [MapQuery,setMapQuery] = useState(null);
-  
+
   // Generate image previews
   useEffect(() => {
     const nextPreviews = files.map((file) => ({
@@ -138,6 +139,24 @@ const DiagnosisForm = () => {
   const conditions = Array.isArray(analysis?.conditions)
     ? analysis.conditions
     : [];
+  const specialtySearch = useMemo(
+    () => deriveSpecialtySearch(conditions),
+    [conditions]
+  );
+  const specialtySearchQuery = useMemo(() => {
+    if (!specialtySearch) return "";
+    const params = new URLSearchParams();
+    if (specialtySearch.keyword) params.set("keyword", specialtySearch.keyword);
+    if (specialtySearch.placeType)
+      params.set("placeType", specialtySearch.placeType);
+    if (specialtySearch.title) params.set("title", specialtySearch.title);
+    if (specialtySearch.highlight)
+      params.set("highlight", specialtySearch.highlight);
+    return params.toString();
+  }, [specialtySearch]);
+  const specialtyMapHref = specialtySearchQuery
+    ? `/map?${specialtySearchQuery}`
+    : "/map";
 
   return (
     <div className="space-y-8">
@@ -145,7 +164,7 @@ const DiagnosisForm = () => {
         onSubmit={handleSubmit}
         className="glass-card space-y-8 rounded-3xl p-8"
       >
-        {/* STEP 1 */}
+      
         <div className="space-y-3">
           <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200">
             <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-200">
@@ -170,7 +189,7 @@ const DiagnosisForm = () => {
           />
         </div>
 
-        {/* STEP 2 */}
+      
         <div className="space-y-4">
           <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-sky-200">
             <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-sky-500/20 text-sky-200">
@@ -260,82 +279,104 @@ const DiagnosisForm = () => {
       </form>
 
       {analysis && (
-        <section className="glass-card space-y-6 rounded-3xl border border-emerald-500/40 bg-emerald-500/5 p-8 text-white">
-          <div>
-            <h2 className="text-2xl font-semibold">HealthAI findings</h2>
-            <p className="mt-2 text-sm text-emerald-100/80">
-              These insights come directly from the most recent analysis.
-            </p>
-          </div>
-          {analysis.summary && (
-            <p className="text-sm text-emerald-50/90">{analysis.summary}</p>
-          )}
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm">
-              <h3 className="text-sm font-semibold text-white">
-                Recommended care level
-              </h3>
-              <p className="mt-1 text-emerald-100">
-                {analysis.recommendedCareLevel || "Not specified"}
+        <>
+          <section className="glass-card space-y-6 rounded-3xl border border-emerald-500/40 bg-emerald-500/5 p-8 text-white">
+            <div>
+              <h2 className="text-2xl font-semibold">HealthAI findings</h2>
+              <p className="mt-2 text-sm text-emerald-100/80">
+                These insights come directly from the most recent analysis.
               </p>
             </div>
-            {analysis.followUp && (
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-emerald-100">
-                <h3 className="text-sm font-semibold text-white">Next steps</h3>
-                <p className="mt-1">{analysis.followUp}</p>
-              </div>
+            {analysis.summary && (
+              <p className="text-sm text-emerald-50/90">{analysis.summary}</p>
             )}
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-200">
-                Possible conditions
-              </h3>
-              {conditions.length ? (
-                <ul className="space-y-3">
-                  {conditions.map((condition, index) => (
-                    <li
-                      key={`${condition.name}-${index}`}
-                      className="rounded-2xl border border-white/10 bg-black/30 p-4"
-                    >
-                      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <p className="text-base font-semibold text-white">
-                          {condition.name || "Condition"}
-                        </p>
-                        <span className="text-xs uppercase tracking-[0.2em] text-emerald-200">
-                          {condition.probability || "Unknown"}
-                        </span>
-                      </div>
-                      {condition.description && (
-                        <p className="mt-2 text-sm text-emerald-100/80">
-                          {condition.description}
-                        </p>
-                      )}
-                      {Array.isArray(condition.recommendedActions) &&
-                        condition.recommendedActions.length > 0 && (
-                          <div className="mt-3 space-y-2 text-sm text-emerald-100">
-                            <p className="font-semibold text-white">
-                              Suggested actions
-                            </p>
-                            <ul className="list-disc space-y-1 pl-5 text-emerald-50/90">
-                              {condition.recommendedActions.map((action, i) => (
-                                <li key={`${condition.name}-action-${i}`}>
-                                  {action}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-emerald-100/80">
-                  No specific conditions were highlighted. Try adding more
-                  detail or images for a richer analysis.
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm">
+                <h3 className="text-sm font-semibold text-white">
+                  Recommended care level
+                </h3>
+                <p className="mt-1 text-emerald-100">
+                  {analysis.recommendedCareLevel || "Not specified"}
                 </p>
+              </div>
+              {analysis.followUp && (
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-emerald-100">
+                  <h3 className="text-sm font-semibold text-white">Next steps</h3>
+                  <p className="mt-1">{analysis.followUp}</p>
+                </div>
               )}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-200">
+                  Possible conditions
+                </h3>
+                {conditions.length ? (
+                  <ul className="space-y-3">
+                    {conditions.map((condition, index) => (
+                      <li
+                        key={`${condition.name}-${index}`}
+                        className="rounded-2xl border border-white/10 bg-black/30 p-4"
+                      >
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                          <p className="text-base font-semibold text-white">
+                            {condition.name || "Condition"}
+                          </p>
+                          <span className="text-xs uppercase tracking-[0.2em] text-emerald-200">
+                            {condition.probability || "Unknown"}
+                          </span>
+                        </div>
+                        {condition.description && (
+                          <p className="mt-2 text-sm text-emerald-100/80">
+                            {condition.description}
+                          </p>
+                        )}
+                        {Array.isArray(condition.recommendedActions) &&
+                          condition.recommendedActions.length > 0 && (
+                            <div className="mt-3 space-y-2 text-sm text-emerald-100">
+                              <p className="font-semibold text-white">
+                                Suggested actions
+                              </p>
+                              <ul className="list-disc space-y-1 pl-5 text-emerald-50/90">
+                                {condition.recommendedActions.map((action, i) => (
+                                  <li key={`${condition.name}-action-${i}`}>
+                                    {action}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-emerald-100/80">
+                    No specific conditions were highlighted. Try adding more
+                    detail or images for a richer analysis.
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          {specialtySearch && (
+            <div className="glass-card flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-white">
+                  Ready to visit a specialist?
+                </h3>
+                <p className="mt-1 text-sm text-muted">
+                  {specialtySearch.highlight ||
+                    "HealthAI matched your symptoms to nearby specialists."}
+                </p>
+              </div>
+              <Link
+                href={specialtyMapHref}
+                className="btn-primary w-full justify-center px-6 py-3 text-sm sm:w-auto"
+              >
+                Check specialty places
+              </Link>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

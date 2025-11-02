@@ -16,7 +16,7 @@ export async function POST(req) {
       );
     }
 
-    // Prepare Gemini prompt
+
     const prompt = `
 You are "HERB" (HealthAI), an intelligent health assistant. 
 Analyze the following user symptom description and images (if any).
@@ -40,7 +40,8 @@ Output JSON in this structure:
       }
     ],
     "recommendedCareLevel": string,
-    "followUp": string
+    "followUp": string,
+    "whichSpecialityHospitalToGo":string,
   }
 }
 
@@ -50,7 +51,6 @@ Important:
 - Avoid alarming language; focus on awareness and next steps.
     `;
 
-    // Convert image array into Gemini parts
     const imageParts = images.map((img) => ({
       inlineData: {
         mimeType: img.mimeType || "image/jpeg",
@@ -72,7 +72,7 @@ Important:
       },
     });
     // console.log(response);
-    // Parse model output
+ 
     const text = response.text.slice(7,-3);
    
     console.log(text);
@@ -82,7 +82,6 @@ Important:
     }
 
     let parsed;
-    // console.log(text.slice(7,-3))
     try {
       parsed = JSON.parse(text);
 
@@ -91,7 +90,6 @@ Important:
         parsed = { analysis: parsed };
       }
     } catch {
-      // ✅ Fallback: wrap plain text as a minimal valid object
       parsed = {
         analysis: {
           summary: text,
