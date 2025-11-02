@@ -98,7 +98,7 @@ const Page = () => {
 
             <ul className="space-y-5">
               {supportSteps.map(({ title, detail }) => (
-                <li key={title} className="rounded-3xl border border-white/5 bg-white/5 p-5">
+                <li key={title} className="rounded-3xl border border-white/15 bg-white/15 p-5">
                   <h3 className="text-lg font-semibold text-white">{title}</h3>
                   <p className="mt-2 text-sm text-muted">{detail}</p>
                 </li>

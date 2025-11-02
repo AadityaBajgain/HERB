@@ -4,7 +4,7 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-800 backdrop-blur ">
       <nav className="page-shell flex items-center justify-between py-4">
         <Link href="/" className="flex items-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl">

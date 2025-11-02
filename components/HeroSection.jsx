@@ -12,7 +12,7 @@ const HeroSection = () => {
           Wellness reinvented
         </span>
         <div className="space-y-6">
-          <h1 className="text-4xl font-semibold leading-tight text-white md:text-5xl">
+          <h1 className="text-4xl font-semibold leading-tight text-green-400 md:text-5xl">
             Navigate your health with{" "}
             <span className="text-emerald-400">HERB</span>
           </h1>
