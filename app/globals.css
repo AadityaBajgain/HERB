@@ -29,7 +29,7 @@
       radial-gradient(circle at top left, #A3B18A, transparent 45%),
       radial-gradient(circle at top right, #344E41, transparent 40%),
       radial-gradient(circle at bottom, rgba(168, 85, 247, 0.12), transparent 55%);
-    color: var(--foreground);
+    color: var(--foreground);9
     font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     line-height: 1.6;
     display: flex;
