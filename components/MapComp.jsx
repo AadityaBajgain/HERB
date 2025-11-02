@@ -75,8 +75,7 @@ const MapComponent = ({
         keyword: derivedSpecialty.keyword ?? DEFAULT_MAP_SETTINGS.keyword,
         placeType: derivedSpecialty.placeType ?? DEFAULT_MAP_SETTINGS.placeType,
         title: derivedSpecialty.title ?? DEFAULT_MAP_SETTINGS.title,
-        highlight:
-          derivedSpecialty.highlight ?? DEFAULT_MAP_SETTINGS.highlight,
+        highlight: derivedSpecialty.highlight ?? DEFAULT_MAP_SETTINGS.highlight,
       };
     }
 
@@ -167,7 +166,8 @@ const MapComponent = ({
                 },
                 (detail, detailStatus) => {
                   if (
-                    detailStatus === google.maps.places.PlacesServiceStatus.OK &&
+                    detailStatus ===
+                      google.maps.places.PlacesServiceStatus.OK &&
                     detail
                   ) {
                     resolve(detail);
@@ -313,7 +313,22 @@ const MapComponent = ({
           options={options}
           onLoad={onLoad}
         >
-          <Marker position={currentPosition} title="You are here" />
+          {/* Your current position (blue dot) */}
+          <Marker
+            position={currentPosition}
+            title="You are here"
+            icon={{
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 9,
+              fillColor: "#2563EB", // blue-600
+              fillOpacity: 1,
+              strokeColor: "#ffffff",
+              strokeWeight: 2,
+            }}
+            zIndex={9999}
+          />
+
+          {/* Other locations (emerald triangles) */}
           {hospitals.map((h) => (
             <Marker
               key={h.id}
@@ -322,6 +337,7 @@ const MapComponent = ({
               onClick={() => setActivePlaceId(h.id)}
             />
           ))}
+
           {activePlaceId && (
             <InfoWindow
               position={
@@ -332,10 +348,8 @@ const MapComponent = ({
             >
               <div className="space-y-1 text-xs text-slate-700">
                 <p className="font-semibold text-slate-900">
-                  {
-                    hospitals.find((h) => h.id === activePlaceId)?.name ??
-                    "Care location"
-                  }
+                  {hospitals.find((h) => h.id === activePlaceId)?.name ??
+                    "Care location"}
                 </p>
                 <p>
                   {hospitals.find((h) => h.id === activePlaceId)?.address ??
@@ -344,9 +358,7 @@ const MapComponent = ({
                 {hospitals.find((h) => h.id === activePlaceId)?.phone && (
                   <p>
                     Phone:{" "}
-                    {
-                      hospitals.find((h) => h.id === activePlaceId)?.phone
-                    }
+                    {hospitals.find((h) => h.id === activePlaceId)?.phone}
                   </p>
                 )}
               </div>
@@ -395,7 +407,9 @@ const MapComponent = ({
                   {typeof hospital.rating === "number" && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-200">
                       ★ {hospital.rating.toFixed(1)}
-                      {hospital.totalRatings ? ` (${hospital.totalRatings})` : ""}
+                      {hospital.totalRatings
+                        ? ` (${hospital.totalRatings})`
+                        : ""}
                     </span>
                   )}
                 </div>
@@ -414,9 +428,7 @@ const MapComponent = ({
                       {hospital.isOpen ? "Open now" : "Closed"}
                     </span>
                   )}
-                  {hospital.phone && (
-                    <span>Phone: {hospital.phone}</span>
-                  )}
+                  {hospital.phone && <span>Phone: {hospital.phone}</span>}
                   {hospital.website && (
                     <a
                       href={hospital.website}
