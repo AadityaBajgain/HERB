@@ -7,12 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  GoogleMap,
-  InfoWindow,
-  Marker,
-  useLoadScript,
-} from "@react-google-maps/api";
+import { GoogleMap, InfoWindow, Marker, useLoadScript } from "@react-google-maps/api";
 
 const statusLabel = {
   idle: "Ready",
@@ -45,11 +40,6 @@ const MapComponent = ({
   const [error, setError] = useState("");
   const [activePlaceId, setActivePlaceId] = useState(null);
   const fetchIdRef = useRef(0);
-
-  const activePlace = useMemo(
-    () => hospitals.find((h) => h.id === activePlaceId) ?? null,
-    [hospitals, activePlaceId]
-  );
 
   const options = useMemo(
     () => ({
@@ -122,8 +112,7 @@ const MapComponent = ({
                 },
                 (detail, detailStatus) => {
                   if (
-                    detailStatus ===
-                      google.maps.places.PlacesServiceStatus.OK &&
+                    detailStatus === google.maps.places.PlacesServiceStatus.OK &&
                     detail
                   ) {
                     resolve(detail);
@@ -269,46 +258,41 @@ const MapComponent = ({
           options={options}
           onLoad={onLoad}
         >
-          <Marker
-            position={currentPosition}
-            title="You are here"
-            icon={{
-              url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-            }}
-          />
-
+          <Marker position={currentPosition} title="You are here" />
           {hospitals.map((h) => (
             <Marker
               key={h.id}
               position={h.position}
               title={h.name}
               onClick={() => setActivePlaceId(h.id)}
-              icon={{
-                url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-              }}
             />
           ))}
-
-          {activePlace && (
+          {activePlaceId && (
             <InfoWindow
-              position={activePlace?.position || currentPosition}
+              position={
+                hospitals.find((h) => h.id === activePlaceId)?.position ||
+                currentPosition
+              }
               onCloseClick={() => setActivePlaceId(null)}
             >
               <div className="space-y-1 text-xs text-slate-700">
                 <p className="font-semibold text-slate-900">
-                  {activePlace.name ?? "Care location"}
+                  {
+                    hospitals.find((h) => h.id === activePlaceId)?.name ??
+                    "Care location"
+                  }
                 </p>
-                <p>{activePlace.address ?? "Address unavailable"}</p>
-                {activePlace.phone && <p>Phone: {activePlace.phone}</p>}
-                {activePlace.website && (
-                  <a
-                    href={activePlace.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sky-600 underline"
-                  >
-                    Visit website
-                  </a>
+                <p>
+                  {hospitals.find((h) => h.id === activePlaceId)?.address ??
+                    "Address unavailable"}
+                </p>
+                {hospitals.find((h) => h.id === activePlaceId)?.phone && (
+                  <p>
+                    Phone:{" "}
+                    {
+                      hospitals.find((h) => h.id === activePlaceId)?.phone
+                    }
+                  </p>
                 )}
               </div>
             </InfoWindow>
@@ -356,9 +340,7 @@ const MapComponent = ({
                   {typeof hospital.rating === "number" && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-200">
                       ★ {hospital.rating.toFixed(1)}
-                      {hospital.totalRatings
-                        ? ` (${hospital.totalRatings})`
-                        : ""}
+                      {hospital.totalRatings ? ` (${hospital.totalRatings})` : ""}
                     </span>
                   )}
                 </div>
@@ -377,7 +359,9 @@ const MapComponent = ({
                       {hospital.isOpen ? "Open now" : "Closed"}
                     </span>
                   )}
-                  {hospital.phone && <span>Phone: {hospital.phone}</span>}
+                  {hospital.phone && (
+                    <span>Phone: {hospital.phone}</span>
+                  )}
                   {hospital.website && (
                     <a
                       href={hospital.website}
