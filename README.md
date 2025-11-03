@@ -142,7 +142,7 @@ npm run lint
 
 ---
 
-## 📷 Screenshots (optional)
+## 📷 Screenshots 
 
 1. Diagnosis Form
 ![Diagnosis Form](<Screenshot 2025-11-02 at 17.08.22.png>)
