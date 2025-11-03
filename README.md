@@ -120,7 +120,6 @@ npm run lint
 - **Serverless logic** – `app/api/gemini/route.js` sanitizes inputs, calls Gemini, normalizes the JSON contract, and returns a concise payload tailored for the UI.
 - **State coordination** – `lib/diagnosisResponse.js` exposes a lightweight store so the map page can reuse the latest diagnosis without re-fetching the LLM.
 - **External services** – Google Gemini powers the clinical reasoning; Google Maps/Places translate the inferred specialty into location results.
-
 ---
 
 ## 🔁 Workflow Architecture
