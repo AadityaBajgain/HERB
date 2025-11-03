@@ -98,6 +98,41 @@ npm run lint
 
 ---
 
+## 🏛️ System Design
+
+```
+[User Browser]
+      │
+      ▼
+ Next.js App Router (app/*)
+      │        └─ Client UI: Hero, DiagnosisForm, Map
+      ▼
+ API Route /api/gemini (Edge-compatible serverless function)
+      │
+ Google Gemini (LLM JSON response)
+      │
+ Shared Diagnosis Store (lib/diagnosisResponse.js)
+      │
+ Map Experience (components/MapComp.jsx → Google Maps & Places)
+```
+
+- **Presentation layer** – Client components render the landing, diagnosis, and map views; maps are lazy-loaded with the Google SDK to reduce bundle cost.
+- **Serverless logic** – `app/api/gemini/route.js` sanitizes inputs, calls Gemini, normalizes the JSON contract, and returns a concise payload tailored for the UI.
+- **State coordination** – `lib/diagnosisResponse.js` exposes a lightweight store so the map page can reuse the latest diagnosis without re-fetching the LLM.
+- **External services** – Google Gemini powers the clinical reasoning; Google Maps/Places translate the inferred specialty into location results.
+
+---
+
+## 🔁 Workflow Architecture
+
+1. **Input stage** – Users type symptoms, upload optional imagery, and submit via the form. Client validation ensures only supported formats reach the API.
+2. **Inference stage** – `/api/gemini` composes a prompt from the user data, calls Gemini (`gemini-2.0-flash`), and enforces the expected JSON schema before responding.
+3. **Insight stage** – The frontend parses the response into condition cards, triage level, and recommended next steps, persisting the object in the shared store.
+4. **Navigation stage** – The map CTA passes query parameters (specialty, location hints); `MapComp` resolves those into Google Places queries to render nearby providers.
+5. **Feedback stage** – Users can adjust inputs or rerun the analysis; fresh API responses overwrite the shared store to keep views synchronized.
+
+---
+
 ## 📌 Notes & Limitations
 
 - **Not medical advice** – HERB provides informational guidance only; the UI reinforces this disclaimer.
