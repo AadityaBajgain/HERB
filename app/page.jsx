@@ -50,10 +50,10 @@ const supportSteps = [
 const Page = () => {
   return (
     <main className="pb-20">
-      <div className="page-shell space-y-24">
+      <div className="sm:h-screen page-shell space-y-24">
         <HeroSection />
 
-        {/* FEATURES SECTION */}
+
         <section id="features" className="space-y-12">
           <div className="max-w-2xl space-y-4">
             <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-slate-200">
@@ -91,7 +91,7 @@ const Page = () => {
           </div>
         </section>
 
-        {/* SUPPORT SECTION */}
+
         <section className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="space-y-6">
             <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-slate-200">
@@ -169,7 +169,7 @@ const Page = () => {
           </div>
         </section>
 
-        {/* CTA SECTION */}
+
         <section
           id="contact"
           className="glass-card flex flex-col items-center gap-8 overflow-hidden rounded-3xl px-8 py-12 text-center lg:flex-row lg:justify-between lg:text-left"

@@ -3,7 +3,7 @@ import React from "react";
 
 const HeroSection = () => {
   return (
-    <section className="h-screen grid items-center gap-16 lg:grid-cols-[1.1fr_0.9fr]">
+    <section className="sm:h-screen flex flex-col items-center gap-16 lg:flex-row">
       <div className="space-y-10">
         <span className="inline-flex items-center rounded-full border border-sky-500/40 bg-sky-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-sky-300">
           AI-Powered Health
@@ -31,7 +31,7 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Right-side visual card */}
+
       <div className="glass-card relative overflow-hidden rounded-3xl p-8">
         <div
           aria-hidden="true"
@@ -39,7 +39,6 @@ const HeroSection = () => {
         />
 
         <div className="relative space-y-6">
-          {/* AI Example Card */}
           <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
               AI Visual Analysis
