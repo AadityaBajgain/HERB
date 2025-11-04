@@ -1,6 +1,6 @@
-# HERB – AI Symptom Companion
+# HERB – Health AI Companion
 
-HERB (“HealthAI”) is a multimodal health triage assistant built with Next.js 16.  
+HERB is a multimodal health triage assistant built with Next.js 16.  
 Patients describe their symptoms, optionally add photos, and HERB analyzes the inputs with Google Gemini to return structured insights, recommended next steps, and a targeted list of nearby specialists.
 
 ---
@@ -142,7 +142,7 @@ npm run lint
 
 ---
 
-## 📷 Screenshots (optional)
+## 📷 Screenshots 
 
 1. Diagnosis Form
 ![Diagnosis Form](<Screenshot 2025-11-02 at 17.08.22.png>)
