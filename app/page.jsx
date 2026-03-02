@@ -50,7 +50,7 @@ const supportSteps = [
 const Page = () => {
   return (
     <main className="pb-20">
-      <div className="sm:h-screen page-shell space-y-24">
+      <div className="page-shell space-y-24">
         <HeroSection />
 
 
