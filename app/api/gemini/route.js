@@ -5,6 +5,56 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GOOGLE_GEMINI_API_KEY,
 });
 
+const extractGeminiErrorMessage = (error) => {
+  const rawMessage = error?.message;
+  if (typeof rawMessage === "string") {
+    const trimmed = rawMessage.trim();
+    if (trimmed) {
+      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+        try {
+          const parsed = JSON.parse(trimmed);
+          const nested =
+            parsed?.error?.message ??
+            parsed?.message ??
+            parsed?.error ??
+            parsed;
+          if (typeof nested === "string" && nested.trim()) {
+            return nested.trim();
+          }
+        } catch {
+          // Fall back to raw string when parsing fails.
+        }
+      }
+      return trimmed;
+    }
+  }
+
+  return (
+    error?.error?.message ??
+    error?.response?.data?.error?.message ??
+    error?.response?.data?.message ??
+    ""
+  );
+};
+
+const isRateLimitError = (error) => {
+  const status =
+    error?.status ??
+    error?.code ??
+    error?.response?.status ??
+    error?.error?.code;
+  if (status === 429) return true;
+  const statusText = String(
+    error?.status || error?.error?.status || ""
+  ).toUpperCase();
+  if (statusText === "RESOURCE_EXHAUSTED") return true;
+  const message = String(error?.message || "").toLowerCase();
+  return (
+    message.includes("rate") &&
+    (message.includes("exceed") || message.includes("limit") || message.includes("quota"))
+  );
+};
+
 export async function POST(req) {
   try {
     const { symptoms, images = [] } = await req.json();
@@ -59,7 +109,7 @@ Important:
     }));
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.0-flash-lite",
       contents: [
         {
           role: "user",
@@ -103,11 +153,22 @@ Important:
     return NextResponse.json(parsed, { status: 200 });
   } catch (error) {
     console.error("Gemini route error:", error);
+    if (isRateLimitError(error)) {
+      const geminiMessage =
+        extractGeminiErrorMessage(error) ||
+        "Rate limit reached. Please wait a moment and try again.";
+      return NextResponse.json(
+        {
+          error: geminiMessage,
+          rateLimited: true,
+        },
+        { status: 429 }
+      );
+    }
+
     return NextResponse.json(
       {
-        error:
-          error.message ||
-          "An error occurred while generating diagnosis with Gemini.",
+        error: "An error occurred while generating diagnosis.",
       },
       { status: 500 }
     );

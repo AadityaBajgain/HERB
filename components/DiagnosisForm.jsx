@@ -36,7 +36,6 @@ const DiagnosisForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
- 
   
   // Generate image previews
   useEffect(() => {
@@ -116,6 +115,14 @@ const DiagnosisForm = () => {
             images,
           }),
         });
+        if (response.status === 429) {
+          const payload = await response.json().catch(() => null);
+          setError(
+            payload?.error ??
+              "Rate limit reached. Please wait a moment and try again."
+          );
+          return;
+        }
         if (!response.ok) {
           const payload = await response.json().catch(() => null);
           throw new Error(
@@ -395,7 +402,7 @@ const DiagnosisForm = () => {
             </div>
           )}
         </>
-      )}
+      )&& analysis.message}
     </div>
   );
 };
