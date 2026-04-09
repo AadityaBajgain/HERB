@@ -150,6 +150,7 @@ const DiagnosisForm = () => {
   const hasImages = useMemo(() => previews.length > 0, [previews.length]);
 
   const analysis = result?.analysis;
+  console.log(analysis)
   const conditions = Array.isArray(analysis?.conditions)
     ? analysis.conditions
     : [];
