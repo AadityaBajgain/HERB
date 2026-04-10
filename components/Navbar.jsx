@@ -4,30 +4,32 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/80 backdrop-blur">
-      <nav className="page-shell flex items-center justify-between py-4">
-        <Link href="/" className="flex items-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl">
-            <Image
-              src="/favicon.ico"
-              alt="Herb logo"
-              width={36}
-              height={36}
-              priority
-            />
-          </div>
-          <div className="leading-tight">
-            <p className="text-base font-semibold text-white">HERB</p>
-            <p className="text-xs text-muted">Your health AI buddy</p>
-          </div>
+    <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-950/95">
+      <nav className="page-shell flex items-center justify-between py-3">
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/favicon.ico"
+            alt="Herb logo"
+            width={28}
+            height={28}
+            priority
+          />
+          <span className="text-sm font-semibold tracking-wide text-slate-100">
+            HERB
+          </span>
         </Link>
 
-
-        <Link href="/map" className="btn-primary">
-          Find nearby care
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href="/diagnosis" className="btn-secondary">
+            Diagnosis
+          </Link>
+          <Link href="/map" className="btn-primary">
+            Nearby care
+          </Link>
+        </div>
       </nav>
     </header>
   );
 };
+
 export default Navbar;

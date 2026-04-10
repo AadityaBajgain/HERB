@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020617;
-  --background-elevated: rgba(15, 23, 42, 0.75);
-  --foreground: #f8fafc;
+  --background: #0b1220;
+  --surface: #111a2b;
+  --surface-muted: #0f172a;
+  --foreground: #e5e7eb;
   --muted: #94a3b8;
-  --accent: #22c55e;
-  --accent-strong: #16a34a;
+  --border: rgba(148, 163, 184, 0.22);
+  --accent: #38bdf8;
+  --accent-strong: #0ea5e9;
 }
 
 @theme inline {
@@ -18,32 +20,21 @@
 
 @layer base {
   * {
-    @apply box-border scroll-smooth;
+    @apply box-border;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
   }
 
   body {
-    margin: 0;
     min-height: 100vh;
     background-color: var(--background);
-    background-image:
-      radial-gradient(circle at top left, rgba(89, 154, 113, 0.2), transparent 45%),
-      radial-gradient(circle at top right, rgba(63, 118, 144, 0.18), transparent 40%),
-      radial-gradient(circle at bottom, rgba(122, 71, 170, 0.12), transparent 55%);
     color: var(--foreground);
     font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     line-height: 1.6;
-    display: flex;
-    flex-direction: column;
-  }
-
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.3), transparent 55%);
-    filter: blur(90px);
-    z-index: -1;
   }
 
   main {
@@ -57,56 +48,51 @@
   h5,
   h6 {
     color: var(--foreground);
-    font-family: var(--font-geist-sans), system-ui, sans-serif;
   }
 
   a {
     color: inherit;
     text-decoration: none;
-    @apply transition-colors duration-200;
+    @apply transition-colors duration-150;
   }
 }
 
 @layer components {
   .page-shell {
-    @apply mx-auto w-full max-w-6xl px-5 sm:px-10;
+    @apply mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8;
   }
 
   .glass-card {
-    background: var(--background-elevated);
-    @apply border border-white/10 backdrop-blur-2xl;
-    box-shadow: 0 28px 80px -48px rgba(15, 23, 42, 0.95);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    @apply rounded-2xl;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition duration-200 focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
-    background: linear-gradient(135deg, var(--accent), #0ea5e9);
-    box-shadow: 0 18px 45px -24px rgba(14, 165, 233, 0.7);
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-slate-950;
+    background-color: var(--accent);
   }
 
   .btn-primary:hover {
-    transform: translateY(-2px);
-  }
-
-  .btn-primary:active {
-    transform: translateY(0);
+    background-color: var(--accent-strong);
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-transparent px-6 py-3 text-sm font-semibold text-slate-100 transition duration-200 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
+    @apply inline-flex items-center justify-center rounded-lg border border-slate-600 px-4 py-2 text-sm font-medium text-slate-100;
+    background-color: transparent;
   }
 
   .btn-secondary:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-  }
-
-  .btn-secondary:active {
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: rgba(148, 163, 184, 0.12);
   }
 }
 
 @layer utilities {
   .text-muted {
     color: var(--muted);
+  }
+
+  .surface-muted {
+    background-color: var(--surface-muted);
   }
 }

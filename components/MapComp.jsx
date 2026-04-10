@@ -49,9 +49,10 @@ const MapComponent = ({
 
   const latestDiagnosis = useDiagnosisResponse();
   const analysis = latestDiagnosis?.analysis;
-  const conditions = Array.isArray(analysis?.conditions)
-    ? analysis.conditions
-    : [];
+  const conditions = useMemo(
+    () => (Array.isArray(analysis?.conditions) ? analysis.conditions : []),
+    [analysis?.conditions]
+  );
   const specialtyHint = analysis?.whichSpecialityHospitalToGo ?? "";
 
   const derivedSpecialty = useMemo(() => {
@@ -292,23 +293,23 @@ const MapComponent = ({
   }, []);
 
   if (!isLoaded) {
-    return <div className="text-muted">Loading map...</div>;
+    return <div className="text-sm text-muted">Loading map...</div>;
   }
 
   if (!currentPosition) {
-    return <div className="text-muted">Determining your location…</div>;
+    return <div className="text-sm text-muted">Determining your location…</div>;
   }
 
   return (
     <section className="space-y-6">
-      <div className="glass-card overflow-hidden rounded-3xl p-1">
+      <div className="glass-card overflow-hidden p-1">
         <GoogleMap
           zoom={13}
           center={currentPosition}
           mapContainerStyle={{
             width: "100%",
-            height: "420px",
-            borderRadius: "24px",
+            height: "400px",
+            borderRadius: "12px",
           }}
           options={options}
           onLoad={onLoad}
@@ -367,29 +368,28 @@ const MapComponent = ({
         </GoogleMap>
       </div>
 
-      <div className="glass-card rounded-3xl p-6">
+      <div className="glass-card p-5">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-white">{panelTitle}</h3>
+            <h3 className="text-base font-semibold text-slate-100">{panelTitle}</h3>
             {panelHighlight && (
-              <p className="text-xs uppercase tracking-[0.3em] text-muted">
+              <p className="text-xs text-muted">
                 {panelHighlight}
               </p>
             )}
           </div>
-          <span className="text-xs uppercase tracking-[0.3em] text-muted">
+          <span className="text-xs text-muted">
             {statusLabel[status]}
           </span>
         </div>
 
         {status === "error" && error && (
-          <p className="mt-4 text-sm text-rose-200">{error}</p>
+          <p className="mt-4 text-sm text-rose-300">{error}</p>
         )}
 
         {status === "empty" && (
           <p className="mt-4 text-sm text-muted">
-            We couldn’t find specialists matching this search nearby. Try
-            broadening the condition or check again soon.
+            No matching locations found nearby. Try broadening your search.
           </p>
         )}
 
@@ -398,14 +398,14 @@ const MapComponent = ({
             {hospitals.map((hospital) => (
               <li
                 key={hospital.id}
-                className="flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/5 px-4 py-3 text-sm text-muted"
+                className="surface-muted flex flex-col gap-3 rounded-lg border border-slate-700 px-4 py-3 text-sm text-muted"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-base font-semibold text-white">
+                  <p className="text-base font-semibold text-slate-100">
                     {hospital.name}
                   </p>
                   {typeof hospital.rating === "number" && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-200">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-sky-500/15 px-2.5 py-1 text-xs font-semibold text-sky-300">
                       ★ {hospital.rating.toFixed(1)}
                       {hospital.totalRatings
                         ? ` (${hospital.totalRatings})`
@@ -421,8 +421,8 @@ const MapComponent = ({
                     <span
                       className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-semibold ${
                         hospital.isOpen
-                          ? "bg-emerald-500/10 text-emerald-200"
-                          : "bg-rose-500/10 text-rose-200"
+                          ? "bg-sky-500/15 text-sky-300"
+                          : "bg-rose-500/15 text-rose-300"
                       }`}
                     >
                       {hospital.isOpen ? "Open now" : "Closed"}
@@ -434,15 +434,15 @@ const MapComponent = ({
                       href={hospital.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-emerald-200 hover:text-emerald-100"
+                      className="text-sky-300 hover:text-sky-200"
                     >
                       Website
                     </a>
                   )}
                 </div>
                 {!!hospital.openingHours?.length && (
-                  <details className="group rounded-2xl bg-white/5 p-3 text-xs text-muted">
-                    <summary className="cursor-pointer text-white group-open:text-muted">
+                  <details className="group rounded-md border border-slate-700 p-3 text-xs text-muted">
+                    <summary className="cursor-pointer text-slate-100 group-open:text-muted">
                       View weekly hours
                     </summary>
                     <ul className="mt-2 space-y-1">

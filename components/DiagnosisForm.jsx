@@ -42,8 +42,7 @@ const DiagnosisForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
-  
-  // Generate image previews
+
   useEffect(() => {
     const nextPreviews = files.map((file) => ({
       id: file.name + file.lastModified,
@@ -121,6 +120,7 @@ const DiagnosisForm = () => {
             images,
           }),
         });
+
         if (response.status === 429) {
           const payload = await response.json().catch(() => null);
           setError(
@@ -129,6 +129,7 @@ const DiagnosisForm = () => {
           );
           return;
         }
+
         if (!response.ok) {
           const payload = await response.json().catch(() => null);
           throw new Error(
@@ -162,6 +163,7 @@ const DiagnosisForm = () => {
     () => (Array.isArray(analysis?.conditions) ? analysis.conditions : []),
     [analysis?.conditions]
   );
+
   const specialtySearch = useMemo(
     () =>
       deriveSpecialtySearch(
@@ -170,9 +172,10 @@ const DiagnosisForm = () => {
       ),
     [conditions, analysis?.whichSpecialityHospitalToGo]
   );
+
   const specialtySearchQuery = useMemo(() => {
-    if (!analysis) return "";
-    if (!specialtySearch) return "";
+    if (!analysis || !specialtySearch) return "";
+
     const params = new URLSearchParams();
     if (specialtySearch.keyword) params.set("keyword", specialtySearch.keyword);
     if (specialtySearch.placeType)
@@ -180,92 +183,72 @@ const DiagnosisForm = () => {
     if (specialtySearch.title) params.set("title", specialtySearch.title);
     if (specialtySearch.highlight)
       params.set("highlight", specialtySearch.highlight);
+
     if (analysis.whichSpecialityHospitalToGo) {
       params.set(
         "whichSpecialityHospitalToGo",
         analysis.whichSpecialityHospitalToGo
       );
     }
+
     return params.toString();
   }, [analysis, specialtySearch]);
+
   const specialtyMapHref = specialtySearchQuery
     ? `/map?${specialtySearchQuery}`
     : "/map";
 
   return (
-    <div className="space-y-8">
-      <form
-        onSubmit={handleSubmit}
-        className="glass-card space-y-8 rounded-3xl p-8"
-      >
-        {/* STEP 1 */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200">
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-200">
-              1
-            </span>
-            Describe your symptoms
-          </div>
-          <label className="block text-lg font-semibold text-white">
-            What are you experiencing?
+    <div className="space-y-6">
+      <form onSubmit={handleSubmit} className="glass-card space-y-6 p-6">
+        <div className="space-y-2">
+          <label
+            htmlFor="symptoms"
+            className="block text-sm font-medium text-slate-100"
+          >
+            Symptoms
           </label>
-          <p className="text-sm text-muted">
-            Mention when it started, pain level, visible changes, or any recent
-            triggers. HERB uses this along with image analysis to identify
-            possible causes.
-          </p>
           <textarea
-            className="mt-4 w-full resize-none rounded-2xl border border-white/10 bg-slate-950/60 p-4 text-sm text-white shadow-inner outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/50"
-            placeholder="Example: Two days ago I noticed a red, itchy rash on my forearm after hiking."
-            rows={6}
+            id="symptoms"
+            className="surface-muted w-full resize-none rounded-lg border border-slate-700 p-3 text-sm text-slate-100 outline-none focus:border-sky-400"
+            placeholder="Example: I developed an itchy red patch on my forearm yesterday."
+            rows={5}
             value={symptoms}
             onChange={(event) => setSymptoms(event.target.value)}
           />
         </div>
 
-        {/* STEP 2 */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-sky-200">
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-sky-500/20 text-sky-200">
-              2
-            </span>
-            Upload image (optional)
-          </div>
+        <div className="space-y-3">
           <label
             htmlFor="diagnosis-photos"
-            className="group flex cursor-pointer flex-col items-center justify-center rounded-3xl border border-dashed border-white/20 bg-white/5 p-8 text-center transition hover:border-emerald-300/40 hover:bg-emerald-500/5"
+            className="block text-sm font-medium text-slate-100"
           >
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950/60 text-2xl text-emerald-300 shadow-inner">
-                📷
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-white">
-                  Drag & drop or click to upload
-                </p>
-                <p className="text-xs text-muted">
-                  JPG, PNG, or HEIC up to 10 MB each. Close-ups work best.
-                </p>
-              </div>
-              <input
-                id="diagnosis-photos"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleFilesChange}
-                className="sr-only"
-              />
-            </div>
+            Images (optional)
+          </label>
+
+          <label
+            htmlFor="diagnosis-photos"
+            className="block cursor-pointer rounded-lg border border-dashed border-slate-600 p-4 text-sm text-muted hover:border-slate-500"
+          >
+            Upload one or more images
+            <input
+              id="diagnosis-photos"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleFilesChange}
+              className="sr-only"
+            />
           </label>
 
           {hasImages && (
-            <ul className="grid gap-4 sm:grid-cols-2">
+            <ul className="grid gap-3 sm:grid-cols-2">
               {previews.map((preview) => (
                 <li
                   key={preview.id}
-                  className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950/60 p-4"
+                  className="surface-muted rounded-lg border border-slate-700 p-3"
                 >
-                  <div className="relative h-40 w-full overflow-hidden rounded-2xl border border-white/10 bg-black/20">
+                  <div className="relative h-32 w-full overflow-hidden rounded-md border border-slate-700">
                     <Image
                       src={preview.url}
                       alt={`Uploaded symptom photo ${preview.name}`}
@@ -275,14 +258,14 @@ const DiagnosisForm = () => {
                       sizes="(max-width: 768px) 100vw, 300px"
                     />
                   </div>
-                  <div className="mt-3 space-y-1 text-xs text-muted">
-                    <p className="truncate text-white">{preview.name}</p>
+                  <div className="mt-2 text-xs text-muted">
+                    <p className="truncate text-slate-200">{preview.name}</p>
                     <p>{formatSize(preview.size)}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleRemoveFile(preview.id)}
-                    className="btn-secondary absolute right-4 top-4 w-auto px-3 py-1 text-xs"
+                    className="mt-2 text-xs text-sky-300 hover:text-sky-200"
                   >
                     Remove
                   </button>
@@ -292,125 +275,96 @@ const DiagnosisForm = () => {
           )}
         </div>
 
-        <div className="space-y-3">
-          {error && (
-            <div className="rounded-3xl border border-rose-500/40 bg-rose-500/10 p-4 text-sm text-rose-100">
-              {error}
-            </div>
-          )}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="btn-primary w-full justify-center px-8 py-4 text-base"
-          >
-            {isSubmitting ? "Analyzing..." : "Analyze with HERB"}
+        {error && (
+          <div className="rounded-lg border border-rose-500/50 bg-rose-500/10 p-3 text-sm text-rose-200">
+            {error}
+          </div>
+        )}
+
+        <div className="flex flex-wrap items-center gap-3">
+          <button type="submit" disabled={isSubmitting} className="btn-primary">
+            {isSubmitting ? "Analyzing..." : "Analyze symptoms"}
           </button>
           <p className="text-xs text-muted">
-            HERB is an AI health assistant, not a doctor. If you’re in a
-            medical emergency, call your local emergency number immediately.
+            HERB is not a replacement for professional medical advice.
           </p>
         </div>
       </form>
 
       {analysis && (
-        <>
-          <section className="glass-card space-y-6 rounded-3xl border border-emerald-500/40 bg-emerald-500/5 p-8 text-white">
-            <div>
-              <h2 className="text-2xl font-semibold">HERB findings</h2>
-              <p className="mt-2 text-sm text-emerald-100/80">
-                These insights come directly from the most recent analysis.
+        <section className="glass-card space-y-5 p-6">
+          <div className="space-y-1">
+            <h2 className="text-xl font-semibold text-slate-100">Results</h2>
+            {summary && <p className="text-sm text-muted">{summary}</p>}
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="surface-muted rounded-lg border border-slate-700 p-4 text-sm">
+              <p className="font-medium text-slate-100">Recommended care level</p>
+              <p className="mt-1 text-muted">
+                {analysis.recommendedCareLevel || "Not specified"}
               </p>
             </div>
-            {summary && (
-              <p className="text-sm text-emerald-50/90">{summary}</p>
-            )}
-            <div className="space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm">
-                <h3 className="text-sm font-semibold text-white">
-                  Recommended care level
-                </h3>
-                <p className="mt-1 text-emerald-100">
-                  {analysis.recommendedCareLevel || "Not specified"}
-                </p>
-              </div>
-              {analysis.followUp && (
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-emerald-100">
-                  <h3 className="text-sm font-semibold text-white">Next steps</h3>
-                  <p className="mt-1">{analysis.followUp}</p>
-                </div>
-              )}
-              <div className="space-y-3">
-                <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-200">
-                  Possible conditions
-                </h3>
-                {conditions.length ? (
-                  <ul className="space-y-3">
-                    {conditions.map((condition, index) => (
-                      <li
-                        key={`${condition.name}-${index}`}
-                        className="rounded-2xl border border-white/10 bg-black/30 p-4"
-                      >
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                          <p className="text-base font-semibold text-white">
-                            {condition.name || "Condition"}
-                          </p>
-                          <span className="text-xs uppercase tracking-[0.2em] text-emerald-200">
-                            {condition.probability || "Unknown"}
-                          </span>
-                        </div>
-                        {condition.description && (
-                          <p className="mt-2 text-sm text-emerald-100/80">
-                            {condition.description}
-                          </p>
-                        )}
-                        {Array.isArray(condition.recommendedActions) &&
-                          condition.recommendedActions.length > 0 && (
-                            <div className="mt-3 space-y-2 text-sm text-emerald-100">
-                              <p className="font-semibold text-white">
-                                Suggested actions
-                              </p>
-                              <ul className="list-disc space-y-1 pl-5 text-emerald-50/90">
-                                {condition.recommendedActions.map((action, i) => (
-                                  <li key={`${condition.name}-action-${i}`}>
-                                    {action}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-emerald-100/80">
-                    No specific conditions were highlighted. Try adding more
-                    detail or images for a richer analysis.
-                  </p>
-                )}
-              </div>
+
+            <div className="surface-muted rounded-lg border border-slate-700 p-4 text-sm">
+              <p className="font-medium text-slate-100">Follow up</p>
+              <p className="mt-1 text-muted">
+                {analysis.followUp || "No follow-up guidance provided."}
+              </p>
             </div>
-          </section>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-slate-100">
+              Possible conditions
+            </h3>
+
+            {conditions.length ? (
+              <ul className="space-y-2">
+                {conditions.map((condition, index) => (
+                  <li
+                    key={`${condition.name}-${index}`}
+                    className="surface-muted rounded-lg border border-slate-700 p-4"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-medium text-slate-100">
+                        {condition.name || "Condition"}
+                      </p>
+                      <span className="text-xs text-sky-300">
+                        {condition.probability || "Unknown"}
+                      </span>
+                    </div>
+                    {condition.description && (
+                      <p className="mt-1 text-xs text-muted">
+                        {condition.description}
+                      </p>
+                    )}
+                    {Array.isArray(condition.recommendedActions) &&
+                      condition.recommendedActions.length > 0 && (
+                        <ul className="mt-2 space-y-1 text-xs text-muted">
+                          {condition.recommendedActions.map((action, i) => (
+                            <li key={`${condition.name}-action-${i}`}>{action}</li>
+                          ))}
+                        </ul>
+                      )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted">
+                No specific conditions were highlighted.
+              </p>
+            )}
+          </div>
 
           {specialtySearch && (
-            <div className="glass-card flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-white">
-                  Ready to visit a specialist?
-                </h3>
-                <p className="mt-1 text-sm text-muted">
-                  {specialtySearch.highlight ||
-                    "HERB matched your symptoms to nearby specialists who can help."}
-                </p>
-              </div>
-              <Link
-                href={specialtyMapHref}
-                className="btn-primary w-full justify-center px-6 py-3 text-sm sm:w-auto"
-              >
-                Check specialty places
+            <div className="pt-1">
+              <Link href={specialtyMapHref} className="btn-secondary">
+                View matching nearby specialists
               </Link>
             </div>
           )}
-        </>
+        </section>
       )}
     </div>
   );
