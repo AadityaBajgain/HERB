@@ -55,6 +55,14 @@ const isRateLimitError = (error) => {
   );
 };
 
+const normalizeGeminiText = (value) => {
+  if (typeof value !== "string") return "";
+  return value
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/, "")
+    .trim();
+};
+
 export async function POST(req) {
   try {
     const { symptoms, images = [] } = await req.json();
@@ -109,7 +117,7 @@ Important:
     }));
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: [
         {
           role: "user",
@@ -121,13 +129,14 @@ Important:
         responseMimeType: "application/json",
       },
     });
-    // console.log(response);
- 
-    const text = response.text.slice(7,-3);
-   
-    console.log(text);
+
+    const rawText =
+      typeof response?.text === "function"
+        ? response.text()
+        : response?.text ?? "";
+    const text = normalizeGeminiText(String(rawText ?? ""));
+
     if (!text) {
-      console.log(response.text);
       throw new Error("Gemini returned an empty response.");
     }
 

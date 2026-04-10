@@ -29,6 +29,12 @@ const toBase64 = async (file) => {
   return btoa(binary);
 };
 
+const normalizeDiagnosisPayload = (payload) => {
+  if (!payload || typeof payload !== "object") return { analysis: null };
+  if (payload.analysis && typeof payload.analysis === "object") return payload;
+  return { analysis: payload };
+};
+
 const DiagnosisForm = () => {
   const [symptoms, setSymptoms] = useState("");
   const [files, setFiles] = useState([]);
@@ -132,8 +138,9 @@ const DiagnosisForm = () => {
         }
 
         const payload = await response.json();
-        setResult(payload);
-        setDiagnosisResponse(payload);
+        const normalizedPayload = normalizeDiagnosisPayload(payload);
+        setResult(normalizedPayload);
+        setDiagnosisResponse(normalizedPayload);
       } catch (submitError) {
         console.error(submitError);
         setError(
@@ -150,10 +157,11 @@ const DiagnosisForm = () => {
   const hasImages = useMemo(() => previews.length > 0, [previews.length]);
 
   const analysis = result?.analysis;
-  console.log(analysis)
-  const conditions = Array.isArray(analysis?.conditions)
-    ? analysis.conditions
-    : [];
+  const summary = analysis?.summary ?? analysis?.message ?? "";
+  const conditions = useMemo(
+    () => (Array.isArray(analysis?.conditions) ? analysis.conditions : []),
+    [analysis?.conditions]
+  );
   const specialtySearch = useMemo(
     () =>
       deriveSpecialtySearch(
@@ -313,8 +321,8 @@ const DiagnosisForm = () => {
                 These insights come directly from the most recent analysis.
               </p>
             </div>
-            {analysis.summary && (
-              <p className="text-sm text-emerald-50/90">{analysis.summary}</p>
+            {summary && (
+              <p className="text-sm text-emerald-50/90">{summary}</p>
             )}
             <div className="space-y-4">
               <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm">
@@ -403,7 +411,7 @@ const DiagnosisForm = () => {
             </div>
           )}
         </>
-      )&& analysis.message}
+      )}
     </div>
   );
 };
